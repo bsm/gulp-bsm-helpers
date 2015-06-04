@@ -1,12 +1,12 @@
 {
   "name": "gulp-bsm-helpers",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "DRY gulp task builders",
   "main": "dist/index.js",
   "scripts": {
     "lint": "node_modules/.bin/jshint src",
-    "compile": "node_modules/.bin/babel src --out-dir dist --optional runtime",
-    "prepublish": "npm run-script lint && npm run-script compile"
+    "build": "node_modules/.bin/babel src --out-dir dist --optional runtime",
+    "prepublish": "npm run-script lint && npm run-script build"
   },
   "repository": {
     "type": "git",
