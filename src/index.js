@@ -79,6 +79,12 @@ class DSL {
       return chain
         .pipe(gulpif(/[.]jade$/, jade({pretty: true}), gutil.noop()));
     });
+
+    this.defineTask('build-assets', 'copy', {
+      src:  opts.path.assets,
+      dest: opts.path.build,
+      sync: this.browserSync,
+    });
   }
 
   defineLint(opts) {
@@ -90,10 +96,23 @@ class DSL {
 
   defineAll(opts) {
     opts = opts || this.defaultOpts();
+    let gulp   = this.gulp;
+    let series = gulp.series;
+    let parallel = gulp.parallel;
 
     this.defineClean(opts);
     this.defineBuild(opts);
     this.defineLint(opts);
+
+    gulp.task('watch', () => {
+      return gulp.watch(opts.path.app + '/**', series('build', 'lint'));
+    });
+    gulp.task('serve', () => {
+      return this.browserSync(opts.server);
+    });
+    gulp.task('build',   parallel('build-html', 'build-css', 'build-js', 'build-assets'));
+    gulp.task('rebuild', series('clean', 'build'));
+    gulp.task('run',     series('rebuild', parallel('lint', 'serve', 'watch')));
   }
 }
 
