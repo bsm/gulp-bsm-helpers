@@ -32,7 +32,7 @@ class DSL {
         coffee: ['app/**/*.coffee', '!app/**/*_test.coffee'],
         html:   ['app/**/*.{html,jade}', '!app/**/_*.{html,jade}'],
         css:    ['app/**/*.{less,css}'],
-        assets: ['app/**/*.{jpg,png,gif,css,svg,woff,ttf,eot,pdf}', 'vendor/**/{assets}/*.{jpg,png,gif,css,svg,woff,ttf,eot,pdf}'],
+        assets: ['{app,vendor}/**/*.{jpg,png,gif,css,svg,woff,ttf,eot,pdf}'],
         json:   ['app/**/*.json'],
       },
 
@@ -65,7 +65,7 @@ class DSL {
     this.loadTask('build-js',    {src: opts.path.js.concat(opts.path.coffee), dest: opts.path.build, sync: this.browserSync});
     this.loadTask('build-css',   {src: opts.path.css,    dest: opts.path.build, sync: this.browserSync});
     this.loadTask('build-html',  {src: opts.path.html,   dest: opts.path.build, sync: this.browserSync});
-    this.loadTask('copy-assets', {src: opts.path.assets, dest: opts.path.build, sync: this.browserSync});
+    this.loadTask('copy-assets', {src: opts.path.assets, dest: opts.path.build + '/assets', sync: this.browserSync, flatten: true});
   }
 
   defineLint(opts) {
