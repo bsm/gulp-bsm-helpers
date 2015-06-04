@@ -1,4 +1,5 @@
 import cache      from 'gulp-cached';
+import changed    from 'gulp-changed';
 import plumber    from 'gulp-plumber';
 import sourcemaps from 'gulp-sourcemaps';
 
