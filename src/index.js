@@ -26,7 +26,7 @@ class DSL {
 
         js:     ['app/**/*.{js}', '!app/**/*_test.{js}'],
         coffee: ['app/**/*.{coffee}', '!app/**/*_test.{coffee}'],
-        html:   ['app/**/*.{html,jade}'],
+        html:   ['app/**/*.{html,jade}', '!app/**/_*.{html,jade}'],
         css:    ['app/**/*.{less,css}'],
         assets: ['app/**/*.{jpg,png,gif,css,svg,woff,ttf,eot,pdf}'],
         json:   ['app/**/*.json'],
