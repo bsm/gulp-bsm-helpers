@@ -1,8 +1,5 @@
 import browserSync  from 'browser-sync';
 import gutil        from 'gulp-util';
-import gulpif       from 'gulp-if';
-import babel        from 'gulp-babel';
-import ngAnnotate   from 'gulp-ng-annotate';
 
 class DSL {
 
@@ -11,9 +8,9 @@ class DSL {
     this.browserSync = browserSync.create();
   }
 
-  defineTask(name, kind, ...args) {
+  loadTask(name, ...args) {
     try {
-      require(`./tasks/${kind}.js`)(name, this.gulp, ...args);
+      require(`./tasks/${name}.js`)(name, this.gulp, ...args);
     } catch (e) {
       gutil.log(gutil.colors.red(e));
       throw e;
@@ -55,79 +52,61 @@ class DSL {
   defineClean(opts) {
     opts = opts || this.defaultOpts();
 
-    this.defineTask('clean', 'clean', {
-      src: [opts.path.build, opts.path.dist],
-    });
+    this.loadTask('clean', {src: [opts.path.build, opts.path.dist]});
   }
 
   defineBuild(opts) {
     opts = opts || this.defaultOpts();
 
-    this.defineTask('build-js', 'build', {
-      src:  opts.path.js.concat(opts.path.coffee),
-      dest: opts.path.build,
-      ext:  '.js',
-      sync: this.browserSync,
-    }, (chain) => {
-      return chain
-        .pipe(gulpif(/[.]coffee$/, coffee({bare: true}), gutil.noop()))
-        .pipe(babel({comments: true, compact: false}))
-        .pipe(ngAnnotate({sourceMap: true}));
-    });
-
-    this.defineTask('build-css', 'build', {
-      src:  opts.path.css,
-      dest: opts.path.build,
-      ext:  '.css',
-      sync: this.browserSync,
-    }, (chain) => {
-      return chain
-        .pipe(gulpif(/[.]less$/, less({compress: false}), gutil.noop()));
-    });
-
-    this.defineTask('build-html', 'build', {
-      src:  opts.path.html,
-      dest: opts.path.build,
-      ext:  '.html',
-      sync: this.browserSync,
-    }, (chain) => {
-      return chain
-        .pipe(gulpif(/[.]jade$/, jade({pretty: true}), gutil.noop()));
-    });
-
-    this.defineTask('build-assets', 'copy', {
-      src:  opts.path.assets,
-      dest: opts.path.build,
-      sync: this.browserSync,
-    });
+    this.loadTask('build-js',    {src: opts.path.js.concat(opts.path.coffee), dest: opts.path.build, sync: this.browserSync});
+    this.loadTask('build-css',   {src: opts.path.css,    dest: opts.path.build, sync: this.browserSync});
+    this.loadTask('build-html',  {src: opts.path.html,   dest: opts.path.build, sync: this.browserSync});
+    this.loadTask('copy-assets', {src: opts.path.assets, dest: opts.path.build, sync: this.browserSync});
   }
 
   defineLint(opts) {
     let gulp = this.gulp;
     opts = opts || this.defaultOpts();
 
-    this.defineTask('lint-js', 'lint-js', {src: opts.path.js});
-    this.defineTask('lint-coffee', 'lint-coffee', {src: opts.path.coffee});
+    this.loadTask('lint-js', {src: opts.path.js});
+    this.loadTask('lint-coffee', {src: opts.path.coffee});
     gulp.task('lint', gulp.parallel('lint-js', 'lint-coffee'));
   }
 
-  defineAll(opts) {
+  defineWatch(opts) {
+    let gulp = this.gulp;
+    opts = opts || this.defaultOpts();
+
+    gulp.task('watch', () => {
+      return gulp.watch(opts.path.app + '/**', gulp.series('build', 'lint'));
+    });
+  }
+
+  defineServe(opts) {
+    let gulp = this.gulp;
+    opts = opts || this.defaultOpts();
+
+    gulp.task('serve', () => {
+      return this.browserSync(opts.server);
+    });
+  }
+
+  defineCombos() {
+    gulp.task('build',   gulp.parallel('build-html', 'build-css', 'build-js', 'copy-assets'));
+    gulp.task('rebuild', gulp.series('clean', 'build'));
+    gulp.task('run',     gulp.series('rebuild', gulp.parallel('lint', 'serve', 'watch')));
+  }
+
+  fullNelson(opts) {
     let gulp = this.gulp;
     opts = opts || this.defaultOpts();
 
     this.defineClean(opts);
     this.defineBuild(opts);
     this.defineLint(opts);
-
-    gulp.task('watch', () => {
-      return gulp.watch(opts.path.app + '/**', gulp.series('build', 'lint'));
-    });
-    gulp.task('serve', () => {
-      return this.browserSync(opts.server);
-    });
-    gulp.task('build',   gulp.parallel('build-html', 'build-css', 'build-js', 'build-assets'));
-    gulp.task('rebuild', gulp.series('clean', 'build'));
-    gulp.task('run',     gulp.series('rebuild', gulp.parallel('lint', 'serve', 'watch')));
+    this.defineWatch(opts);
+    this.defineServe(opts);
+    this.defineCombos();
   }
 }
 

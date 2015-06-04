@@ -3,12 +3,12 @@ import changed    from 'gulp-changed';
 import plumber    from 'gulp-plumber';
 import sourcemaps from 'gulp-sourcemaps';
 
-module.exports = (name, gulp, opts, callback) => {
+module.exports = (name, gulp, extension, opts, callback) => {
   gulp.task(name, () => {
     let chain = gulp.src(opts.src)
       .pipe(cache(name))
       .pipe(plumber())
-      .pipe(changed(opts.dest, {extension: opts.ext}))
+      .pipe(changed(opts.dest, {extension: extension}))
       .pipe(sourcemaps.init());
 
     if (callback) {
