@@ -92,13 +92,14 @@ class DSL {
   }
 
   defineCombos() {
+    let gulp = this.gulp;
+
     gulp.task('build',   gulp.parallel('build-html', 'build-css', 'build-js', 'copy-assets'));
     gulp.task('rebuild', gulp.series('clean', 'build'));
     gulp.task('run',     gulp.series('rebuild', gulp.parallel('lint', 'serve', 'watch')));
   }
 
   fullNelson(opts) {
-    let gulp = this.gulp;
     opts = opts || this.defaultOpts();
 
     this.defineClean(opts);
