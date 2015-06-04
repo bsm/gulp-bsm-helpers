@@ -106,8 +106,8 @@ class DSL {
     let gulp = this.gulp;
     opts = opts || this.defaultOpts();
 
-    this.defineTask('lint-js', 'lint-js', {paths: opts.path.js});
-    this.defineTask('lint-coffee', 'lint-coffee', {paths: opts.path.coffee});
+    this.defineTask('lint-js', 'lint-js', {src: opts.path.js});
+    this.defineTask('lint-coffee', 'lint-coffee', {src: opts.path.coffee});
     gulp.task('lint', gulp.parallel('lint-js', 'lint-coffee'));
   }
 
