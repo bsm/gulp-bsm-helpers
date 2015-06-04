@@ -8,13 +8,17 @@ class DSL {
     this.browserSync = browserSync.create();
   }
 
-  loadTask(name, ...args) {
+  task(kind, name, ...args) {
     try {
-      require(`./tasks/${name}.js`)(name, this.gulp, ...args);
+      require(`./tasks/${kind}.js`)(name, this.gulp, ...args);
     } catch (e) {
       gutil.log(gutil.colors.red(e));
       throw e;
     }
+  }
+
+  loadTask(name, ...args) {
+    this.task(name, name, ...args);
   }
 
   defaultOpts() {
