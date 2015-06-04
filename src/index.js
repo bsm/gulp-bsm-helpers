@@ -32,7 +32,7 @@ class DSL {
         coffee: ['app/**/*.coffee', '!app/**/*_test.coffee'],
         html:   ['app/**/*.{html,jade}', '!app/**/_*.{html,jade}'],
         css:    ['app/**/*.{less,css}'],
-        assets: ['app/**/*.{jpg,png,gif,css,svg,woff,ttf,eot,pdf}'],
+        assets: ['app/**/*.{jpg,png,gif,css,svg,woff,ttf,eot,pdf}', 'vendor/**/{assets}/*.{jpg,png,gif,css,svg,woff,ttf,eot,pdf}'],
         json:   ['app/**/*.json'],
       },
 
