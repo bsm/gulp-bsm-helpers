@@ -32,7 +32,7 @@ class DSL {
         coffee: ['app/**/*.coffee', '!app/**/*_test.coffee'],
         html:   ['app/**/*.{html,jade}', '!app/**/_*.{html,jade}'],
         css:    ['app/**/*.{less,css}'],
-        assets: ['{app,vendor}/**/*.{jpg,png,gif,css,svg,woff,ttf,eot,pdf}'],
+        assets: ['{app,vendor}/**/*.{jpg,png,gif,css,svg,woff*,ttf,eot,pdf}'],
         json:   ['app/**/*.json'],
       },
 
@@ -90,8 +90,8 @@ class DSL {
     let gulp = this.gulp;
     opts = opts || this.defaultOpts();
 
-    gulp.task('serve', () => {
-      return this.browserSync(opts.server);
+    gulp.task('serve', (cb) => {
+      return this.browserSync.init(opts.server, cb);
     });
   }
 
