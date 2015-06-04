@@ -34,6 +34,21 @@ class DSL {
         assets: ['app/**/*.{jpg,png,gif,css,svg,woff,ttf,eot,pdf}'],
         json:   ['app/**/*.json'],
       },
+
+      server: {
+        open:       false,
+        ui:         false,
+        notify:     false,
+        ghostMode:  false,
+        port:       9000,
+        server: {
+          baseDir: ['./build'],
+          routes: {
+            '/system.config.js':  './system.config.js',
+            '/jspm_packages':     './jspm_packages'
+          },
+        },
+      },
     };
   }
 
@@ -88,31 +103,31 @@ class DSL {
   }
 
   defineLint(opts) {
+    let gulp = this.gulp;
     opts = opts || this.defaultOpts();
 
     this.defineTask('lint-js', 'lint-js', {paths: opts.path.js});
     this.defineTask('lint-coffee', 'lint-coffee', {paths: opts.path.coffee});
+    gulp.task('lint', gulp.parallel('lint-js', 'lint-coffee'));
   }
 
   defineAll(opts) {
+    let gulp = this.gulp;
     opts = opts || this.defaultOpts();
-    let gulp   = this.gulp;
-    let series = gulp.series;
-    let parallel = gulp.parallel;
 
     this.defineClean(opts);
     this.defineBuild(opts);
     this.defineLint(opts);
 
     gulp.task('watch', () => {
-      return gulp.watch(opts.path.app + '/**', series('build', 'lint'));
+      return gulp.watch(opts.path.app + '/**', gulp.series('build', 'lint'));
     });
     gulp.task('serve', () => {
       return this.browserSync(opts.server);
     });
-    gulp.task('build',   parallel('build-html', 'build-css', 'build-js', 'build-assets'));
-    gulp.task('rebuild', series('clean', 'build'));
-    gulp.task('run',     series('rebuild', parallel('lint', 'serve', 'watch')));
+    gulp.task('build',   gulp.parallel('build-html', 'build-css', 'build-js', 'build-assets'));
+    gulp.task('rebuild', gulp.series('clean', 'build'));
+    gulp.task('run',     gulp.series('rebuild', gulp.parallel('lint', 'serve', 'watch')));
   }
 }
 
