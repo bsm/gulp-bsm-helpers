@@ -32,8 +32,10 @@ class DSL {
         coffee: ['app/**/*.coffee', '!app/**/*_test.coffee'],
         html:   ['app/**/*.{html,jade}', '!app/**/_*.{html,jade}'],
         css:    ['app/**/*.{less,css}'],
-        assets: ['{app,vendor}/**/*.{jpg,png,gif,css,svg,woff*,ttf,eot,pdf}'],
+        assets: ['app/**/*.{jpg,png,gif,css,svg,woff*,ttf,eot,pdf}'],
         json:   ['app/**/*.json'],
+
+        watch:  ['/app/**'],
       },
 
       server: {
@@ -65,7 +67,9 @@ class DSL {
     this.loadTask('build-js',    {src: opts.path.js.concat(opts.path.coffee), dest: opts.path.build, sync: this.browserSync});
     this.loadTask('build-css',   {src: opts.path.css,    dest: opts.path.build, sync: this.browserSync});
     this.loadTask('build-html',  {src: opts.path.html,   dest: opts.path.build, sync: this.browserSync});
-    this.loadTask('copy-assets', {src: opts.path.assets, dest: opts.path.build + '/assets', sync: this.browserSync, flatten: true});
+
+    this.loadTask('copy-assets', {src: opts.path.assets, dest: opts.path.build, sync: this.browserSync});
+    this.loadTask('copy-json',   {src: opts.path.json,   dest: opts.path.build, sync: this.browserSync});
   }
 
   defineLint(opts) {
@@ -82,7 +86,7 @@ class DSL {
     opts = opts || this.defaultOpts();
 
     gulp.task('watch', () => {
-      return gulp.watch(opts.path.app + '/**', gulp.series('build', 'lint'));
+      return gulp.watch(opts.path.watch, gulp.series('build', 'lint'));
     });
   }
 
@@ -98,7 +102,7 @@ class DSL {
   defineCombos() {
     let gulp = this.gulp;
 
-    gulp.task('build',   gulp.parallel('build-html', 'build-css', 'build-js', 'copy-assets'));
+    gulp.task('build',   gulp.parallel('build-html', 'build-css', 'build-js', 'copy-assets', 'copy-json'));
     gulp.task('rebuild', gulp.series('clean', 'build'));
     gulp.task('run',     gulp.series('rebuild', gulp.parallel('lint', 'serve', 'watch')));
   }
