@@ -35,7 +35,7 @@ class DSL {
         assets: ['app/**/*.{jpg,png,gif,css,svg,woff*,ttf,eot,pdf}'],
         json:   ['app/**/*.json'],
 
-        watch:  ['/app/**'],
+        watch:  ['app/**'],
       },
 
       server: {
