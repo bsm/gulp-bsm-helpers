@@ -43,6 +43,19 @@ class DSL {
         paths:    ['.', './jspm_packages/npm', './jspm_packages/github'],
       },
 
+      coffee: {
+        bare: true,
+      },
+
+      babel: {
+        comments: true,
+        compact: false,
+      },
+
+      jade: {
+        pretty: true,
+      },
+
       server: {
         open:       false,
         ui:         false,
@@ -69,9 +82,9 @@ class DSL {
   defineBuild(opts) {
     opts = opts || this.defaultOpts();
 
-    this.loadTask('build-js',    { src: opts.path.js.concat(opts.path.coffee), dest: opts.path.build, sync: this.browserSync });
+    this.loadTask('build-js',    { src: opts.path.js.concat(opts.path.coffee), dest: opts.path.build, sync: this.browserSync, coffee: opts.coffee, babel: opts.babel });
     this.loadTask('build-css',   { src: opts.path.css,    dest: opts.path.build, sync: this.browserSync, less: opts.less });
-    this.loadTask('build-html',  { src: opts.path.html,   dest: opts.path.build, sync: this.browserSync });
+    this.loadTask('build-html',  { src: opts.path.html,   dest: opts.path.build, sync: this.browserSync, jade: opts.jade });
 
     this.loadTask('copy-assets', { src: opts.path.assets, dest: opts.path.build, sync: this.browserSync });
     this.loadTask('copy-json',   { src: opts.path.json,   dest: opts.path.build, sync: this.browserSync });

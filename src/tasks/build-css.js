@@ -6,6 +6,6 @@ import build  from './build';
 module.exports = (name, gulp, opts) => {
   return build(name, gulp, '.less', opts, (chain) => {
     return chain
-      .pipe(gulpif(/[.]less$/, less({compress: false}), gutil.noop()));
+      .pipe(gulpif(/[.]less$/, less(opts.less), gutil.noop()));
   });
 };

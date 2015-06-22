@@ -6,6 +6,6 @@ import build  from './build';
 module.exports = (name, gulp, opts) => {
   return build(name, gulp, '.html', opts, (chain) => {
     return chain
-      .pipe(gulpif(/[.]jade$/, jade({pretty: true}), gutil.noop()));
+      .pipe(gulpif(/[.]jade$/, jade(opts.jade), gutil.noop()));
   });
 };

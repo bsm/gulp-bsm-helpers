@@ -8,8 +8,8 @@ import build  from './build';
 module.exports = (name, gulp, opts) => {
   return build(name, gulp, '.js', opts, (chain) => {
     return chain
-      .pipe(gulpif(/[.]coffee$/, coffee({bare: true}), gutil.noop()))
-      .pipe(babel({comments: true, compact: false}))
+      .pipe(gulpif(/[.]coffee$/, coffee(opts.coffee), gutil.noop()))
+      .pipe(babel(opts.babel))
       .pipe(ngAnnotate({sourceMap: true}));
   });
 };
