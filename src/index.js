@@ -43,26 +43,6 @@ class DSL {
         paths:    ['.', './jspm_packages/npm', './jspm_packages/github'],
       },
 
-      karma: {
-        basePath: '',
-        frameworks: ['jspm', 'jasmine'],
-        preprocessors: {
-          '**/*.coffee': ['coffee', 'babel'],
-          'lib/**/*.js': ['babel'],
-        },
-        coffeePreprocessor: {
-          options: {sourceMap: true},
-        },
-        colors: true,
-        autoWatch: false,
-        singleRun: true,
-        browsers: ['PhantomJS'],
-        jspm: {
-          loadFiles: opts.path.test,
-          serveFiles: [opts.path.build + '/**/*'],
-        }
-      },
-
       server: {
         open:       false,
         ui:         false,

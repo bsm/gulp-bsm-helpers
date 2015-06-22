@@ -1,6 +1,6 @@
 {
   "name": "gulp-bsm-helpers",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "DRY gulp task builders",
   "main": "dist/index.js",
   "scripts": {
